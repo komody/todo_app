@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
 
 function App() {
   const [inputText, setInputText] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [filter, setFilter] = useState('notStarted')
-  const [filteredTodos, setFilteredTodos] = useState([])
+  // const [filter, setFilter] = useState('notStarted')
+  // const [filteredTodos, setFilteredTodos] = useState([])
 
   type Todo = {
     inputValue: string;
     id: string;
     checked: boolean;
+    status: string;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +32,7 @@ function App() {
       inputValue: inputText,
       id: uuidv4(),
       checked: false,
+      status: "",
     };
 
     setTodos([newTodo, ...todos]);
@@ -75,30 +77,14 @@ function App() {
     setTodos(newTodos);
   };
 
-  useEffect(() => {
-    const filteringTodos = () => {
-      switch (filter) {
-        case 'notStarted':
-          setFilteredTodos(todos.filter((todo) => todo.status === 'notStarted'))
-          break
-        case 'inProgress':
-          setFilteredTodos(todos.filter((todo) => todo.status === 'inProgress'))
-          break
-        case 'done':
-          setFilteredTodos(todos.filter((todo) => todo.status === 'done'))
-          break
-        default:
-          setFilteredTodos(todos)
-      }
-    }
-    filteringTodos()
-  }, [filter, todos])
+
+
 
   return (
     <div className="App">
       <div>
         <h2>Todoリスト 初級</h2>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <select /*value={filter} onChange={(e) => setFilter(e.target.value)}*/>
             <option value="all">すべて</option>
             <option value="notStarted">未着手</option>
             <option value="inProgress">作業中</option>
@@ -113,7 +99,7 @@ function App() {
           <input type="submit" value="作成" className="submitButton" />
         </form>
         <ul className="todoList">
-          {filteredtodos.map((todo) => (
+          {todos.map((todo) => (
             <li key={todo.id}>
               <input
                 type="text"
@@ -121,8 +107,7 @@ function App() {
                 onChange={(e) => handleEdit(todo.id, e.target.value)}
                 disabled={todo.checked}
               />
-              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                <option value="all">すべて</option>
+              <select /*value={filter} onChange={(e) => setFilter(e.target.value)}*/>
                 <option value="notStarted">未着手</option>
                 <option value="inProgress">作業中</option>
                 <option value="done">完了</option>
